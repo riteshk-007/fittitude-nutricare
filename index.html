@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,400;0,600;1,800&family=Saira+Extra+Condensed:ital,wght@1,800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,400;0,600;0,700;1,800&family=Saira+Extra+Condensed:ital,wght@1,800&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -84,7 +84,7 @@
       }
       h1 {
         position: fixed;
-        z-index: 1;
+        z-index: 3;
         left: 0;
         right: 0;
         top: 50%;
@@ -188,10 +188,13 @@
         pointer-events: none;
       }
       .sub {
-        font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-        color: #e6dfd3;
-        max-width: 36ch;
-        line-height: 1.45;
+        font-size: clamp(0.8rem, 1.1vw, 1rem);
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #ffc35c;
+        max-width: 30ch;
+        line-height: 1.6;
         text-shadow: 0 2px 12px #000;
       }
       @media (min-aspect-ratio: 1/1) {
@@ -232,30 +235,138 @@
         color: #a8a196;
         text-shadow: 0 1px 6px #000;
       }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .snd {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font:
+          700 0.92rem/1 Saira,
+          sans-serif;
+        letter-spacing: 0.06em;
+        color: #1a0d03;
+        background: var(--grad);
+        border: 0;
+        border-radius: 99px;
+        padding: 12px 20px 12px 16px;
+        min-height: 46px;
+        cursor: pointer;
+        box-shadow: 0 6px 24px rgba(247, 148, 29, 0.35);
+        transition:
+          transform 0.25s,
+          filter 0.25s;
+      }
+      .snd:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+      .snd:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 3px;
+      }
+      .snd svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+        flex: none;
+      }
+      .snd [hidden] {
+        display: none;
+      }
+      .snd .bars {
+        display: none;
+        align-items: flex-end;
+        gap: 2px;
+        height: 14px;
+      }
+      .snd[aria-pressed="true"] .bars {
+        display: flex;
+      }
+      .snd .bars i {
+        width: 3px;
+        background: currentColor;
+        border-radius: 2px;
+        animation: eq 0.9s ease-in-out infinite;
+        height: 40%;
+      }
+      .snd .bars i:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .snd .bars i:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes eq {
+        50% {
+          height: 100%;
+        }
+      }
+      .glow {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 460px;
+        height: 460px;
+        margin: -230px 0 0 -230px;
+        z-index: 4;
+        pointer-events: none;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 170, 70, 0.22),
+          rgba(247, 148, 29, 0.08) 40%,
+          transparent 68%
+        );
+        mix-blend-mode: screen;
+        opacity: 0;
+        transition: opacity 0.6s;
+      }
+      .glow.on {
+        opacity: 1;
+      }
+      @media (hover: none) {
+        .glow {
+          display: none;
+        }
+      }
       @media (max-aspect-ratio: 1/1) {
         h1 {
-          top: 13%;
+          top: calc(max(22px, env(safe-area-inset-top)) + 84px);
           transform: none;
           flex-direction: column;
           align-items: center;
           justify-content: flex-start;
           padding: 0;
-          font-size: min(31vw, 15vh);
-          line-height: 0.82;
+          font-size: min(30vw, 13dvh, 150px);
+          line-height: 0.86;
         }
         h1 .gap {
           display: none;
         }
         h1 span.w {
           -webkit-text-stroke-width: 1.5px;
-          padding-right: 0.04em;
+          padding: 0.02em 0.1em 0.04em 0;
         }
         .pill {
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           padding: 8px 14px;
         }
         .logo {
-          width: 132px;
+          width: 128px;
+        }
+        .dock {
+          gap: 10px;
+          padding-bottom: max(18px, env(safe-area-inset-bottom));
+        }
+        .sub {
+          font-size: 0.72rem;
+          letter-spacing: 0.2em;
         }
       }
       @media (max-height: 700px) and (min-aspect-ratio: 1/1) {
@@ -279,6 +390,7 @@
       id="c"
       aria-label="A 3D object draped in black satin cloth, slowly rotating. Drag to rotate."
     ></canvas>
+    <div class="glow" id="glow"></div>
     <header class="top">
       <img
         class="logo"
@@ -289,11 +401,13 @@
     </header>
     <div class="dock">
       <p class="sub">Something big is on its way.</p>
-      <p class="hint" id="hint">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" /></svg
-        >Drag to rotate
-      </p>
+      <div class="row">
+        <p class="hint" id="hint">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" /></svg
+          >Drag to rotate
+        </p>
+      </div>
       <p class="meta">
         &copy; 2026 Fittitude Nutricare &middot; fittitudenutricare.com
       </p>
@@ -334,6 +448,9 @@
         const back = new THREE.PointLight(0xcfe3ee, 0, 34);
         back.position.set(0, 7, -5);
         scene.add(rimL, rimR, back);
+        const follow = new THREE.PointLight(0xffb060, 0, 16);
+        follow.position.set(0, 1.5, 4.5);
+        scene.add(follow);
 
         /* studio reflections so the satin gets soft highlights */
         try {
@@ -541,9 +658,9 @@
           }
         }
         drape(0);
-        const c1 = new THREE.Color(0x3a3d42),
-          c2 = new THREE.Color(0x202226),
-          c3 = new THREE.Color(0x0e0f11),
+        const c1 = new THREE.Color(0x1c1d20),
+          c2 = new THREE.Color(0x111214),
+          c3 = new THREE.Color(0x070708),
           tc = new THREE.Color();
         for (let i = 0; i < R; i++)
           for (let j = 0; j <= C; j++) {
@@ -590,12 +707,11 @@
         const wv = weave();
         const clothMat = new THREE.MeshStandardMaterial({
           vertexColors: true,
-          map: wv,
-          bumpMap: wv,
-          bumpScale: 0.05,
-          roughness: 0.34,
-          metalness: 0.3,
-          envMapIntensity: 1.25,
+          map: null,
+          bumpScale: 0,
+          roughness: 0.4,
+          metalness: 0.25,
+          envMapIntensity: 0.6,
           side: THREE.DoubleSide,
         });
         clothMat.onBeforeCompile = (sh) => {
@@ -607,7 +723,8 @@
         const cloth = new THREE.Mesh(cg, clothMat);
         cloth.frustumCulled = false;
         rig.add(cloth);
-        let fr = 0;
+        let fr = 0,
+          tt = 0;
         function ripple(t) {
           drape(t);
           cg.attributes.position.needsUpdate = true;
@@ -623,7 +740,9 @@
           renderer.setSize(w, h, false);
           camera.aspect = w / h;
           portrait = camera.aspect < 1;
-          base = Math.max(14, 11.5 / camera.aspect);
+          base = portrait
+            ? Math.max(15, 2.5 / (0.2867 * camera.aspect))
+            : Math.max(14, 11.5 / camera.aspect);
           camera.updateProjectionMatrix();
         }
         addEventListener("resize", fit);
@@ -631,10 +750,13 @@
 
         const IDLE = reduce ? 0 : 0.005; /* constant slow spin */
         const rot = { x: 0, y: -0.5, vy: IDLE },
-          mouse = { x: 0, y: 0, cx: 0, cy: 0 };
+          mouse = { x: 0, y: 0, cx: 0, cy: 0, sp: 0 };
         let drag = false,
           lx = 0,
           ly = 0;
+        const glow = document.getElementById("glow");
+        const gX = gsap.quickTo(glow, "x", { duration: 0.55, ease: "power3" }),
+          gY = gsap.quickTo(glow, "y", { duration: 0.55, ease: "power3" });
         canvas.addEventListener("pointerdown", (e) => {
           drag = true;
           lx = e.clientX;
@@ -645,6 +767,13 @@
         canvas.addEventListener("pointermove", (e) => {
           mouse.x = (e.clientX / innerWidth) * 2 - 1;
           mouse.y = (e.clientY / innerHeight) * 2 - 1;
+          mouse.sp = Math.min(
+            1,
+            mouse.sp + Math.hypot(e.movementX || 0, e.movementY || 0) / 120,
+          );
+          glow.classList.add("on");
+          gX(e.clientX);
+          gY(e.clientY);
           if (!drag) return;
           const dx = e.clientX - lx,
             dy = e.clientY - ly;
@@ -675,13 +804,6 @@
           stagger: 0.15,
           ease: "power4.out",
         });
-        gsap.to("h1 i", {
-          "--f": 1,
-          duration: 1.6,
-          delay: 1.8,
-          stagger: 0.15,
-          ease: "power2.out",
-        });
         gsap.from(".dock > *", {
           y: 24,
           opacity: 0,
@@ -701,7 +823,7 @@
         renderer.setAnimationLoop(() => {
           const t = clock.getElapsedTime(),
             I = lamp.i;
-          spot.intensity = 4.2 * I;
+          spot.intensity = 2.4 * I;
           rimL.intensity = 2.2 * I;
           rimR.intensity = 1.4 * I;
           back.intensity = 1.6 * I;
@@ -713,8 +835,10 @@
             rot.vy += (IDLE - rot.vy) * 0.04;
             rot.x += (0 - rot.x) * 0.03;
           }
-          rig.rotation.set(0, rot.y, 0);
-          if (!reduce && ++fr & 1) ripple(t);
+          rig.rotation.set(mouse.cy * 0.05, rot.y, -mouse.cx * 0.04);
+          mouse.sp *= 0.95;
+          tt += 0.016 * (1 + mouse.sp * 9);
+          if (!reduce && ++fr & 1) ripple(tt);
           if (!reduce)
             for (let i = 0; i < N; i++) {
               let y = dp[i * 3 + 1] + dv[i] * 0.012;
@@ -725,12 +849,18 @@
           dg.attributes.position.needsUpdate = true;
           mouse.cx += (mouse.x - mouse.cx) * 0.05;
           mouse.cy += (mouse.y - mouse.cy) * 0.05;
+          const pk = portrait ? 0.6 : 1;
           camera.position.set(
-            mouse.cx * 1.1,
-            1.6 + rot.x * 9 - mouse.cy * 0.4,
+            mouse.cx * 3.4 * pk,
+            (portrait ? 2.8 : 1.8) + rot.x * 9 - mouse.cy * 1.6 * pk,
             base,
           );
-          camera.lookAt(0, portrait ? 1.1 : 0.35, 0);
+          camera.lookAt(0, portrait ? 2.1 : 0.35, 0);
+          spot.position.x = mouse.cx * 5;
+          spot.position.z = 3 + mouse.cy * 3;
+          rimL.position.x = -6 + mouse.cx * 3;
+          follow.position.set(mouse.cx * 5, 1.5 - mouse.cy * 2.5, 4.5);
+          follow.intensity = 1.6 * I * (1 + mouse.sp * 1.2);
           renderer.render(scene, camera);
         });
       })();
